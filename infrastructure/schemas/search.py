@@ -14,8 +14,8 @@ class FlightSearchRequest:
     departure: str
     arrival: str
     departure_date: str
-    return_date: str
     passengers: list[Passenger]
+    return_date: str = None
     cabinType: str = 'economy'
 
     def _formate_date(self, date: str) -> tuple[str, str, int]:

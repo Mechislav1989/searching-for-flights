@@ -19,7 +19,7 @@ class BrowserService:
     _parser: Optional[DataParser] = field(default=None, init=False)
 
     async def __aenter__(self):
-        self._client = await self.launcher.launch()
+        self.context, self._client = await self.launcher.launch()
         self._interactor = PageInteractor(self._client, self.logger)
         self._parser = DataParser(self._client, self.selector_config, self.logger)
         return self
@@ -31,7 +31,7 @@ class BrowserService:
                 await error_handler.handle_error(self._client, exc_val)
         finally:
             if self._client:
-                await self.launcher.close(self._client)
+                await self.launcher.close()
             self._client = None
             self._interactor = None
             self._parser = None

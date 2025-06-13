@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from logging import Logger
 import random
 from typing import Any, Optional
-from playwright.async_api import async_playwright, Playwright, Page
+from playwright.async_api import async_playwright, Playwright, Page, BrowserContext
 
 from infrastructure.base_browser import BrowserClient, BrowserLauncher
 from infrastructure.config_browser import BrowserConfig
@@ -18,23 +18,24 @@ class BrowserManager(BrowserLauncher):
     _playwright: Optional[Any] = field(default=None, init=False)
     _browser: Optional[Any] = field(default=None, init=False)
 
-    async def launch(self) -> BrowserClient:
+    async def launch(self) -> tuple[BrowserContext, BrowserClient]:
         playwright = await async_playwright().start()
         browser = await self._launch_browser(playwright)
         context = await browser.new_context(
             user_agent=self.config.user_agent,
-            extra_http_headers=self.config.custom_headers
+            extra_http_headers=self.config.custom_headers,
         )
         page = await context.new_page()
         if self.config.stealth_mode:
             await self._apply_stealth_mode(page)
-        return page
+        return context, page
 
     async def _launch_browser(self, playwright: Playwright) -> BrowserClient:
         launch_options = {
-            "headless": self.config.headless,
-            "proxy": {"server": self.config.proxy} if self.config.proxy else None,
-            "timeout": self.config.timeout
+            # 'args': ['--disable-http2'],
+            'headless': self.config.headless,
+            'proxy': {'server': self.config.proxy} if self.config.proxy else None,
+            'timeout': self.config.timeout
         }
         if self.config.browser_type == "firefox" and self.config.stealth_mode:
             launch_options["firefox_user_prefs"] = {

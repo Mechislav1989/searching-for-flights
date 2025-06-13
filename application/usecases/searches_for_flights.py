@@ -19,7 +19,10 @@ class FlightSearchUseCase:
 
             # Navigate to the flight search page
             await service.interactor.navigate(flight_data.url)
-
+            # 'https://www.united.com/en/gb/fsr/choose-flights?f=LONDON&t=CHICAGO&d=2025-10-22&tt=1&sc=7&px=1,0,0,0,0,1,0,0&taxng=1&newHP=True&clm=7'
+            # Choose flight type
+            await self._check_flight_type(service)
+            
             # Fill in the search form
             await self._fill_form(service, flight_data)
 
@@ -32,6 +35,10 @@ class FlightSearchUseCase:
             self.logger.info(f'Search completed with {len(flights)} flights found')
             return flights
 
+    async def _check_flight_type(self, service: BrowserService) -> None:
+        await service.client.check(service.selectors.flight_type_one)
+        await service.interactor.random_delay(200, 500)
+
     async def _fill_form(self, service: BrowserService, flight_data: FlightSearchRequest) -> None:
         self.logger.info('Filling in the flight search form')
         selectors = service.selectors
@@ -39,15 +46,18 @@ class FlightSearchUseCase:
         # Fill in the departure and arrival fields
         await service.interactor.fill_input(selectors.from_input, flight_data.departure)
         await service.interactor.fill_input(selectors.to_input, flight_data.arrival)
+        
+        await service.interactor.click_element('body')
 
         # Fill in the date fields
         if not flight_data.departure_date and not flight_data.return_date:
             self.logger.error('No departure or return date provided')
             raise ValueError('Departure or return date must be provided')
         departure_date = flight_data._formate_date(flight_data.departure_date)
-        return_date = flight_data._formate_date(flight_data.return_date)
         await self._fill_date(service, selectors, departure_date)
-        await self._fill_date(service, selectors, return_date)
+        if flight_data.return_date:
+            return_date = flight_data._formate_date(flight_data.return_date)
+            await self._fill_date(service, selectors, return_date)
 
         # Select the number of passengers
         await self._fill_passengers(service, selectors, flight_data.passengers)

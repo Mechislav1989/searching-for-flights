@@ -1,1 +1,23 @@
-[]
+[
+    {
+        "airline": "UA 958 (Boeing 767-300)",
+        "flight_time": "08:30 - 08:30",
+        "duration": "9H\nDuration 9 hours",
+        "price": "\u00a31,334",
+        "stop": "NONSTOP"
+    },
+    {
+        "airline": "UA 959 (Boeing 767-300)",
+        "flight_time": "11:05 - 11:05",
+        "duration": "9H, 5M\nDuration 9 hours and 5 minutes",
+        "price": "\u00a31,334",
+        "stop": "NONSTOP"
+    },
+    {
+        "airline": "UA 928 (Boeing 767-300)",
+        "flight_time": "14:10 - 14:10",
+        "duration": "9H, 10M\nDuration 9 hours and 10 minutes",
+        "price": "\u00a31,334",
+        "stop": "NONSTOP"
+    }
+]
