@@ -1,0 +1,18 @@
+[project]
+name = "searching-for-flight"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Mechislav",email = "93447863+Mechislav1989@users.noreply.github.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12,<4.0"
+dependencies = [
+    "playwright (>=1.52.0,<2.0.0)",
+    "punq (>=0.7.0,<0.8.0)",
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
